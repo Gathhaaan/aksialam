@@ -144,8 +144,8 @@
             </div>
             
             <x-before-after-slider 
-                imageBefore="{{ asset('images/sebelum.jpg') }}" 
-                imageAfter="{{ asset('images/sesudah.jpg') }}" 
+                imageBefore="{{ asset('images/before.jpeg') }}" 
+                imageAfter="{{ asset('images/after.jpeg') }}" 
             />
         </section>
 
