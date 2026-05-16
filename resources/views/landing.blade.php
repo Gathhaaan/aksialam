@@ -19,12 +19,32 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-green-500 selection:text-white">
 
-    <nav class="bg-slate-900 w-full fixed top-0 z-50 border-b border-white/10">
+    <nav class="bg-slate-900 w-full fixed top-0 left-0 right-0 z-50 border-b border-white/10">
         <div class="flex justify-between p-5 max-w-7xl mx-auto items-center">
-            <h1 class="text-2xl font-black text-green-500 tracking-tighter">AksiAlam.</h1>
-            <div class="space-x-2 sm:space-x-4">
-                <a href="{{ route('login') }}" class="text-slate-300 font-bold hover:text-green-400 transition text-sm sm:text-base px-2">Masuk</a>
-                <a href="{{ route('register') }}" class="bg-green-600 text-white px-5 py-2 sm:px-6 rounded-full font-bold hover:bg-green-500 transition shadow-lg shadow-green-600/30 text-sm sm:text-base">Gabung Sekarang</a>
+            <a href="/" class="text-2xl font-black text-green-500 tracking-tighter">AksiAlam.</a>
+            
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                @auth
+                    <span class="text-slate-400 text-sm hidden md:inline">Masuk sebagai: <strong class="text-white">{{ Auth::user()->name }}</strong></span>
+                    
+                    <a href="{{ route('home') }}" class="bg-green-600 text-white px-5 py-2 rounded-full font-bold hover:bg-green-500 transition shadow-lg shadow-green-600/30 text-sm">
+                        Ke Beranda Dasbor
+                    </a>
+                    
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="text-slate-400 font-bold hover:text-red-400 transition text-sm px-2">
+                            Keluar
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="text-slate-300 font-bold hover:text-green-400 transition text-sm sm:text-base px-2">
+                        Masuk
+                    </a>
+                    <a href="{{ route('register') }}" class="bg-green-600 text-white px-5 py-2 sm:px-6 rounded-full font-bold hover:bg-green-500 transition shadow-lg shadow-green-600/30 text-sm sm:text-base">
+                        Gabung Sekarang
+                    </a>
+                @endauth
             </div>
         </div>
     </nav>
