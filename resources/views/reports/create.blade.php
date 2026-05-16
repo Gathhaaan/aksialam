@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buat Laporan - AksiAlam</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+    <title>Beranda - AksiAlam</title>
+    
+    @include('components.head')
+
+    </head>
 <body class="bg-slate-50 min-h-screen pt-10">
     <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-sm border border-slate-100">
         <h2 class="text-2xl font-bold text-slate-900 mb-2">Laporkan Kondisi Alam</h2>

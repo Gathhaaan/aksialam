@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - AksiAlam</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Masuk - AksiAlam</title>
+    @include('components.head')
 </head>
 <body class="bg-slate-50 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100 w-full max-w-md">

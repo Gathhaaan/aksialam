@@ -10,8 +10,13 @@ class Report extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'title', 'description', 'category', 
-        'location_name', 'image_before_path', 'status'
+        'user_id',
+        'title',
+        'description',
+        'category',
+        'location_name',
+        'status',
+        'image_url', // Jangan lupa kolom gambar yang baru kita buat
     ];
 
     // Laporan milik 1 user

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\ReportRepositoryInterface;
 use Illuminate\Http\Request;
+use App\Models\Report;
 
 class ReportController extends Controller
 {
@@ -45,19 +46,26 @@ class ReportController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category' => 'required|in:sampah,fasilitas,flora_fauna',
-            'location_name' => 'required|string',
+            'description' => 'required',
+            'category' => 'required',
+            'location_name' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi Foto
         ]);
 
+        $data = $request->all();
         $data['user_id'] = auth()->id();
-        $data['status'] = 'pending'; // Default status
+        $data['status'] = 'pending';
 
-        $this->reportRepository->createReport($data);
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('reports', 'public');
+            $data['image_url'] = '/storage/' . $path;
+        }
 
-        // Kembali ke beranda setelah lapor
-        return redirect('/')->with('success', 'Laporan berhasil dikirim dan menunggu verifikasi.');
+        // Jika image_url kosong, biarkan seeder atau default yang mengisi
+        \App\Models\Report::create($data);
+
+        return redirect()->route('home')->with('success', 'Laporan berhasil dikirim!');
     }
 }

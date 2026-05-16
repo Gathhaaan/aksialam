@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AksiAlam - Solusi Ekologi Masyarakat</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
+    <title>Beranda - AksiAlam</title>
+    
+    @include('components.head')
+
+    </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased">
 
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
