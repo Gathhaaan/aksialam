@@ -23,7 +23,7 @@
                 @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             
-            <div class="mb-6">
+            <div class="mb-4">
                 <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
                 <div class="relative">
                     <input type="password" id="password" name="password" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-green-500 focus:border-green-500 pr-10" required>
@@ -35,6 +35,11 @@
                     </button>
                 </div>
                 @error('password') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-700 mb-1">Konfirmasi Password</label>
+                <input type="password" name="password_confirmation" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-green-500 focus:border-green-500" required placeholder="Ulangi password yang sama">
             </div>
 
             <button type="submit" class="w-full bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition">Daftar Sekarang</button>

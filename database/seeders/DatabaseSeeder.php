@@ -24,6 +24,12 @@ class DatabaseSeeder extends Seeder
             ['name' => 'HIMAFORTIC Care', 'password' => Hash::make('password123'), 'role' => 'organizer']
         );
 
+        // Akun Super Admin
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@aksialam.com'],
+            ['name' => 'Super Admin AksiAlam', 'password' => Hash::make('password123'), 'role' => 'admin', 'exp_points' => 0]
+        );
+
         $realReports = [
             // --- KATEGORI: SAMPAH ---
             [

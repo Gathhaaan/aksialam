@@ -32,16 +32,14 @@ class AuthController extends Controller
             $user = Auth::user();
 
             // LOGIKA PENGARAHAN BERDASARKAN ROLE
-            if ($user->role === 'super_admin') {
-                // Arahkan ke Dashboard Admin (jika kamu sudah buat)
-                // Sementara kita arahkan ke home dulu jika admin.dashboard belum ada
-                return redirect()->route('home')->with('success', 'Selamat datang, Super Admin!');
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard')->with('success', 'Selamat datang kembali, Super Admin!');
             } 
             elseif ($user->role === 'organizer') {
-                return redirect()->route('home')->with('success', 'Selamat datang, Komunitas Penggerak!');
+                return redirect()->route('organizer.dashboard')->with('success', 'Selamat datang, Komunitas Penggerak!');
             } 
             else {
-                // Jika role-nya 'user' (Relawan biasa)
+                // Jika role-nya 'user' (Relawan biasa) → tampilkan beranda lama
                 return redirect()->route('home')->with('success', 'Berhasil masuk! Mari mulai beraksi.');
             }
         }

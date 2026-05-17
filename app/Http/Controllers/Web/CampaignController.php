@@ -36,6 +36,6 @@ class CampaignController extends Controller
             $user->increment('exp_points', 100);
         }
 
-        return redirect()->route('home')->with('success', 'Berhasil mendaftar aksi! Poin kamu bertambah +100 XP.');
+        return redirect()->route('user.dashboard')->with('success', 'Berhasil mendaftar aksi! Poin kamu bertambah +100 XP. 🎉');
     }
 }

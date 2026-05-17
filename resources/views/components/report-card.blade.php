@@ -1,3 +1,4 @@
+@props(['report'])
 <a href="{{ $report->campaign ? route('campaigns.show', $report->campaign->id) : '#' }}" class="block group">
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full">
         <div class="h-48 w-full overflow-hidden relative bg-slate-200">

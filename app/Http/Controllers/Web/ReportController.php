@@ -66,6 +66,6 @@ class ReportController extends Controller
         // Jika image_url kosong, biarkan seeder atau default yang mengisi
         \App\Models\Report::create($data);
 
-        return redirect()->route('home')->with('success', 'Laporan berhasil dikirim!');
+        return redirect()->route('user.dashboard')->with('success', 'Laporan berhasil dikirim! Terima kasih telah peduli. 🌿');
     }
 }

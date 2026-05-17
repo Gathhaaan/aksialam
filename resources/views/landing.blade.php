@@ -22,15 +22,42 @@
     <nav class="bg-slate-900 w-full fixed top-0 left-0 right-0 z-50 border-b border-white/10">
         <div class="flex justify-between p-5 max-w-7xl mx-auto items-center">
             <a href="/" class="text-2xl font-black text-green-500 tracking-tighter">AksiAlam.</a>
-            
+
+            {{-- Nav Links (tengah) --}}
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#cara-kerja" class="text-slate-400 text-sm font-semibold hover:text-green-400 transition">Cara Kerja</a>
+                <a href="#tentang" class="text-slate-400 text-sm font-semibold hover:text-green-400 transition">Tentang</a>
+                <a href="#cta" class="text-slate-400 text-sm font-semibold hover:text-green-400 transition">Bergabung</a>
+            </div>
+
+            {{-- Auth Buttons (kanan) --}}
             <div class="flex items-center space-x-3 sm:space-x-4">
                 @auth
-                    <span class="text-slate-400 text-sm hidden md:inline">Masuk sebagai: <strong class="text-white">{{ Auth::user()->name }}</strong></span>
-                    
-                    <a href="{{ route('home') }}" class="bg-green-600 text-white px-5 py-2 rounded-full font-bold hover:bg-green-500 transition shadow-lg shadow-green-600/30 text-sm">
-                        Ke Beranda Dasbor
-                    </a>
-                    
+                    {{-- Tunjukkan nama & role --}}
+                    <span class="text-slate-400 text-sm hidden md:inline">
+                        Halo, <strong class="text-white">{{ Auth::user()->name }}</strong>
+                        <span class="ml-1 px-2 py-0.5 rounded-full text-xs font-black
+                            {{ Auth::user()->role === 'admin' ? 'bg-purple-500/20 text-purple-300' :
+                               (Auth::user()->role === 'organizer' ? 'bg-blue-500/20 text-blue-300' : 'bg-green-500/20 text-green-300') }}">
+                            {{ ucfirst(Auth::user()->role) }}
+                        </span>
+                    </span>
+
+                    {{-- Link ke dashboard sesuai role --}}
+                    @if(Auth::user()->role === 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="bg-purple-600 text-white px-5 py-2 rounded-full font-bold hover:bg-purple-500 transition shadow-lg shadow-purple-600/30 text-sm">
+                            🛡️ Dashboard Admin
+                        </a>
+                    @elseif(Auth::user()->role === 'organizer')
+                        <a href="{{ route('organizer.dashboard') }}" class="bg-blue-600 text-white px-5 py-2 rounded-full font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-600/30 text-sm">
+                            📣 Dashboard Organizer
+                        </a>
+                    @else
+                        <a href="{{ route('home') }}" class="bg-green-600 text-white px-5 py-2 rounded-full font-bold hover:bg-green-500 transition shadow-lg shadow-green-600/30 text-sm">
+                            🏠 Ke Beranda
+                        </a>
+                    @endif
+
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="text-slate-400 font-bold hover:text-red-400 transition text-sm px-2">
@@ -92,7 +119,7 @@
         </div>
     </header>
 
-    <section class="py-24 px-6 bg-white relative">
+    <section id="tentang" class="py-24 px-6 bg-white relative">
         <div class="max-w-4xl mx-auto text-center">
             <h3 class="text-3xl sm:text-4xl font-black text-slate-900 mb-6">Bukan Sekadar Portal Pengaduan Biasa.</h3>
             <p class="text-lg text-slate-500 leading-relaxed">
@@ -101,7 +128,7 @@
         </div>
     </section>
 
-    <section class="py-24 px-6 bg-slate-50 border-t border-slate-200">
+    <section id="cara-kerja" class="py-24 px-6 bg-slate-50 border-t border-slate-200">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <span class="text-green-600 font-bold uppercase tracking-widest text-sm">Alur Platform</span>
@@ -128,7 +155,7 @@
         </div>
     </section>
 
-    <section class="py-24 px-6 bg-slate-900 text-center relative overflow-hidden">
+    <section id="cta" class="py-24 px-6 bg-slate-900 text-center relative overflow-hidden">
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div class="max-w-3xl mx-auto relative z-10">
             <h3 class="text-4xl font-black text-white mb-6">Penasaran dengan Aksi yang Sedang Berjalan?</h3>

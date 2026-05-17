@@ -75,7 +75,7 @@
     <main class="max-w-7xl mx-auto px-4 py-20">
         
         <section id="eksplorasi" class="mb-12">
-            <form action="/" method="GET" class="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+            <form action="{{ route('home') }}" method="GET" class="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
                 <input type="text" name="search" placeholder="Cari lokasi atau masalah..." value="{{ request('search') }}" class="flex-1 px-4 py-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-green-500 font-medium">
                 <select name="category" class="px-4 py-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-green-500 font-medium cursor-pointer">
                     <option value="">Semua Kategori</option>
