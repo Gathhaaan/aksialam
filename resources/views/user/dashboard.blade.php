@@ -67,9 +67,14 @@
         @endif
 
         {{-- Header --}}
-        <div class="mb-8">
-            <h1 class="text-3xl font-black text-slate-900">Selamat Datang, {{ $user->name }}! 👋</h1>
-            <p class="text-slate-500 font-medium mt-1">Ini adalah dashboard pribadimu sebagai Relawan AksiAlam.</p>
+        <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900">Selamat Datang, {{ $user->name }}! 👋</h1>
+                <p class="text-slate-500 font-medium mt-1">Ini adalah dashboard pribadimu sebagai Relawan AksiAlam.</p>
+            </div>
+            <a href="{{ route('user.rewards.index') }}" class="inline-flex items-center gap-2 bg-amber-500 text-white font-bold px-6 py-3 rounded-full hover:bg-amber-600 transition shadow-lg shadow-amber-500/30">
+                <span class="text-xl">🎁</span> Tukar Reward
+            </a>
         </div>
 
         {{-- XP Card --}}
@@ -145,27 +150,30 @@
                     @endforelse
                 </div>
 
-                {{-- Kampanye Tersedia --}}
+                {{-- Kampanye yang Diikuti --}}
                 <div class="mt-8">
-                    <h2 class="text-xl font-black text-slate-800 mb-4">🚀 Kampanye Tersedia</h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-black text-slate-800">✅ Kampanye yang Diikuti</h2>
+                    </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        @forelse($openCampaigns as $campaign)
-                            <div class="bg-white rounded-2xl p-5 border border-slate-100 hover:shadow-lg transition group">
+                        @forelse($myCampaigns as $campaign)
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 hover:shadow-md transition group">
                                 <div class="flex items-start justify-between gap-2 mb-3">
                                     <h3 class="font-bold text-slate-800 leading-tight group-hover:text-green-600 transition">{{ $campaign->title }}</h3>
-                                    <span class="badge badge-open flex-shrink-0">OPEN</span>
+                                    <span class="badge badge-{{ $campaign->status }} flex-shrink-0">{{ ucfirst($campaign->status) }}</span>
                                 </div>
                                 <p class="text-sm text-slate-500 line-clamp-2 mb-4">{{ $campaign->description }}</p>
                                 <div class="flex items-center justify-between">
                                     <p class="text-xs text-slate-400 font-bold">Oleh: {{ $campaign->organizer->name ?? 'Tim AksiAlam' }}</p>
-                                    <form action="{{ route('user.campaigns.join', $campaign->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-green-700 transition">Daftar</button>
-                                    </form>
+                                    <a href="{{ route('campaigns.show', $campaign->id) }}" class="text-green-600 text-xs font-bold hover:underline">Lihat Detail &rarr;</a>
                                 </div>
                             </div>
                         @empty
-                            <div class="col-span-2 text-center py-10 text-slate-400 font-bold">Belum ada kampanye yang tersedia saat ini.</div>
+                            <div class="col-span-2 bg-white rounded-2xl p-8 border border-dashed border-slate-200 text-center">
+                                <p class="text-3xl mb-2">🌱</p>
+                                <p class="text-slate-400 font-bold text-sm">Kamu belum mengikuti kampanye aksi apapun.</p>
+                                <a href="{{ route('home') }}" class="inline-block mt-3 bg-green-50 text-green-700 px-4 py-2 rounded-full font-bold text-xs hover:bg-green-100 transition">Jelajahi Feed Laporan</a>
+                            </div>
                         @endforelse
                     </div>
                 </div>
@@ -189,20 +197,36 @@
                     @endforeach
                 </div>
 
-                {{-- Kampanye yang diikuti --}}
-                @if($myCampaigns->count() > 0)
-                <div class="mt-6">
-                    <h2 class="text-lg font-black text-slate-800 mb-3">✅ Kampanye Saya</h2>
-                    <div class="space-y-2">
-                        @foreach($myCampaigns as $c)
-                            <div class="bg-white rounded-xl p-4 border border-slate-100">
-                                <p class="font-bold text-slate-800 text-sm">{{ $c->title }}</p>
-                                <span class="badge badge-{{ $c->status }} mt-1 inline-block">{{ ucfirst($c->status) }}</span>
+
+            </div>
+            
+            {{-- Riwayat Reward --}}
+            <div class="mt-8">
+                <h2 class="text-xl font-black text-slate-800 mb-4">🎁 Riwayat Reward</h2>
+                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm space-y-3">
+                    @forelse($myRewards as $myReward)
+                        <div class="flex items-center gap-4 p-3 rounded-xl border border-slate-100 hover:shadow-sm transition">
+                            @if($myReward->image_url)
+                                <img src="{{ $myReward->image_url }}" class="w-12 h-12 rounded-lg object-cover flex-shrink-0">
+                            @else
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-xl flex-shrink-0">🎁</div>
+                            @endif
+                            <div class="flex-1 min-w-0">
+                                <p class="font-bold text-slate-800 truncate leading-tight">{{ $myReward->name }}</p>
+                                <p class="text-xs text-slate-400 font-medium">{{ \Carbon\Carbon::parse($myReward->pivot->created_at)->translatedFormat('d M Y') }}</p>
                             </div>
-                        @endforeach
-                    </div>
+                            <span class="badge {{ $myReward->pivot->status === 'claimed' ? 'badge-verified' : 'badge-pending' }}">
+                                {{ $myReward->pivot->status === 'claimed' ? 'Terkirim' : 'Diproses' }}
+                            </span>
+                        </div>
+                    @empty
+                        <div class="text-center py-6 text-slate-400">
+                            <p class="text-3xl mb-2">🎁</p>
+                            <p class="font-bold text-sm">Belum ada reward yang ditukar.</p>
+                            <a href="{{ route('user.rewards.index') }}" class="text-green-600 text-xs font-bold hover:underline mt-1 inline-block">Tukar sekarang!</a>
+                        </div>
+                    @endforelse
                 </div>
-                @endif
             </div>
 
         </div>

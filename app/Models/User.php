@@ -55,4 +55,11 @@ class User extends Authenticatable implements JWTSubject // Tambahkan implements
                     ->withPivot('attendance')
                     ->withTimestamps();
     }
+
+    public function rewards()
+    {
+        return $this->belongsToMany(Reward::class, 'user_rewards')
+                    ->withPivot('status')
+                    ->withTimestamps();
+    }
 }

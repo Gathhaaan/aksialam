@@ -1,9 +1,9 @@
-@props(['imageBefore', 'imageAfter'])
+@props(['before' => '', 'after' => ''])
 
 <div class="relative w-full max-w-2xl mx-auto h-64 sm:h-96 rounded-xl overflow-hidden shadow-sm" x-data="{ sliderPos: 50 }">
-    <img src="{{ $imageAfter }}" alt="Kondisi Sesudah" class="absolute inset-0 w-full h-full object-cover rounded-xl" />
+    <img src="{{ $after }}" alt="Kondisi Sesudah" class="absolute inset-0 w-full h-full object-cover rounded-xl" />
 
-    <img src="{{ $imageBefore }}" alt="Kondisi Sebelum" class="absolute inset-0 w-full h-full object-cover rounded-xl" :style="`clip-path: polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%);`" />
+    <img src="{{ $before }}" alt="Kondisi Sebelum" class="absolute inset-0 w-full h-full object-cover rounded-xl" :style="`clip-path: polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%);`" />
 
     <input type="range" min="0" max="100" x-model="sliderPos" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-10" />
 

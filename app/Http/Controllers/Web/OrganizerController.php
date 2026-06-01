@@ -5,28 +5,34 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Report;
-use App\Models\Campaign;
-use App\Models\User;
+use App\Repositories\Interfaces\ReportRepositoryInterface;
+use App\Repositories\Interfaces\CampaignRepositoryInterface;
 
 class OrganizerController extends Controller
 {
+    protected $reportRepository;
+    protected $campaignRepository;
+
+    public function __construct(
+        ReportRepositoryInterface $reportRepository,
+        CampaignRepositoryInterface $campaignRepository
+    ) {
+        $this->reportRepository = $reportRepository;
+        $this->campaignRepository = $campaignRepository;
+    }
+
     public function dashboard()
     {
-        // Pastikan hanya role 'organizer' yang bisa akses
-        if (Auth::user()->role !== 'organizer') {
-            return $this->redirectByRole();
-        }
-
         $user = Auth::user();
 
-        // Campaign yang dikelola oleh organizer ini
-        $myCampaigns = Campaign::with(['volunteers', 'report'])
-            ->where('organizer_id', $user->id)
-            ->latest()->get();
+        // Campaign yang dikelola oleh organizer ini (via repository)
+        $myCampaigns = $this->campaignRepository->getCampaignsByOrganizer($user->id);
 
         // Laporan yang menunggu validasi (status pending)
-        $pendingReports = Report::where('status', 'pending')->latest()->take(10)->get();
+        $pendingReports = $this->reportRepository->getReportsByStatus('pending', 10);
+
+        // Laporan yang sudah diverifikasi (untuk dropdown buat kampanye)
+        $verifiedReports = $this->reportRepository->getReportsByStatus('verified');
 
         // Statistik campaign organizer ini
         $stats = [
@@ -39,50 +45,43 @@ class OrganizerController extends Controller
         ];
 
         return view('organizer.dashboard', compact(
-            'user', 'myCampaigns', 'pendingReports', 'stats'
+            'user', 'myCampaigns', 'pendingReports', 'verifiedReports', 'stats'
         ));
     }
 
-    // Validasi laporan → ubah status ke 'verified'
+    // Validasi laporan → ubah status ke 'verified' (via repository)
     public function verifyReport($id)
     {
-        if (Auth::user()->role !== 'organizer') abort(403);
-
-        $report = Report::findOrFail($id);
-        $report->update(['status' => 'verified']);
+        $this->reportRepository->updateReportStatus($id, 'verified');
 
         return back()->with('success', 'Laporan berhasil diverifikasi!');
     }
 
-    // Buat Campaign baru dari laporan yang sudah diverifikasi
+    // Buat Campaign baru dari laporan yang sudah diverifikasi (via repository)
     public function createCampaign(Request $request)
     {
-        if (Auth::user()->role !== 'organizer') abort(403);
-
         $request->validate([
-            'title'         => 'required|string|max:255',
-            'description'   => 'required',
-            'target_metric' => 'required|numeric',
-            'report_id'     => 'required|exists:reports,id',
+            'title'           => 'required|string|max:255',
+            'description'     => 'nullable|string',
+            'event_date'      => 'required|date|after:today',
+            'max_volunteers'  => 'required|integer|min:1',
+            'target_metric'   => 'required|numeric|min:0',
+            'metric_unit'     => 'required|string|max:50',
+            'report_id'       => 'nullable|exists:reports,id',
         ]);
 
-        Campaign::create([
-            'title'         => $request->title,
-            'description'   => $request->description,
-            'target_metric' => $request->target_metric,
-            'report_id'     => $request->report_id,
-            'organizer_id'  => Auth::id(),
-            'status'        => 'open',
+        $this->campaignRepository->createCampaign([
+            'title'           => $request->title,
+            'description'     => $request->description,
+            'event_date'      => $request->event_date,
+            'max_volunteers'  => $request->max_volunteers,
+            'target_metric'   => $request->target_metric,
+            'metric_unit'     => $request->metric_unit,
+            'report_id'       => $request->report_id,
+            'organizer_id'    => Auth::id(),
+            'status'          => 'open',
         ]);
 
         return back()->with('success', 'Kampanye berhasil dibuat!');
-    }
-
-    private function redirectByRole()
-    {
-        $role = Auth::user()->role;
-        if ($role === 'admin') return redirect()->route('admin.dashboard');
-        if ($role === 'user') return redirect()->route('user.dashboard');
-        return redirect()->route('landing');
     }
 }

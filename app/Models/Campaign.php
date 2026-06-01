@@ -10,7 +10,7 @@ class Campaign extends Model
     use HasFactory;
 
     protected $fillable = [
-        'organizer_id', 'report_id', 'title', 'event_date', 
+        'organizer_id', 'report_id', 'title', 'description', 'event_date', 
         'max_volunteers', 'target_metric', 'metric_unit', 
         'image_after_path', 'status'
     ];

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Masuk - AksiAlam</title>
+    <title>Daftar - AksiAlam</title>
     @include('components.head')
 </head>
 <body class="bg-slate-50 flex items-center justify-center min-h-screen py-10">

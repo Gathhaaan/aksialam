@@ -15,6 +15,12 @@
             opacity: 1;
             z-index: 20;
         }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee { animation: marquee 40s linear infinite; }
+        .pause-on-hover:hover { animation-play-state: paused; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-green-500 selection:text-white">
@@ -80,7 +86,25 @@
         <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900"></div>
 
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
+        {{-- Marquee Laporan Terbaru --}}
+        <div class="absolute top-20 md:top-24 left-0 right-0 z-40 bg-green-600/10 border-y border-green-500/20 py-2.5 backdrop-blur-md overflow-hidden flex">
+            <div class="whitespace-nowrap flex gap-10 animate-marquee pause-on-hover w-max">
+                @foreach($latestReports as $rep)
+                <span class="text-green-300 font-medium text-sm">
+                    🚨 Baru saja: <span class="font-bold text-white">{{ $rep->title }}</span> dilaporkan di {{ $rep->location_name }}
+                </span>
+                <span class="text-slate-500">|</span>
+                @endforeach
+                @foreach($latestReports as $rep)
+                <span class="text-green-300 font-medium text-sm">
+                    🚨 Baru saja: <span class="font-bold text-white">{{ $rep->title }}</span> dilaporkan di {{ $rep->location_name }}
+                </span>
+                <span class="text-slate-500">|</span>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10 mt-8">
             <div>
                 <span class="text-green-400 font-black tracking-widest uppercase text-xs sm:text-sm bg-green-500/10 px-4 py-2 rounded-full border border-green-500/20">Platform Restorasi Ekologi No. 1</span>
                 <h2 class="text-5xl sm:text-6xl font-black mt-6 text-white leading-tight">Ubah Kepedulian <br>Menjadi <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">Aksi Nyata.</span></h2>
@@ -88,12 +112,12 @@
                 
                 <div class="mt-10 flex gap-4 sm:gap-6">
                     <div class="bg-white/5 p-5 rounded-2xl border border-white/10 text-center backdrop-blur-sm flex-1 max-w-[140px]">
-                        <h4 class="text-3xl font-black text-white">1.2k+</h4>
-                        <p class="text-[10px] sm:text-xs text-green-400 font-black uppercase mt-1">Relawan Aktif</p>
+                        <h4 class="text-3xl font-black text-white">{{ number_format($totalRelawan) }}</h4>
+                        <p class="text-[10px] sm:text-xs text-green-400 font-black uppercase mt-1">Relawan Terdaftar</p>
                     </div>
                     <div class="bg-white/5 p-5 rounded-2xl border border-white/10 text-center backdrop-blur-sm flex-1 max-w-[140px]">
-                        <h4 class="text-3xl font-black text-white">450+</h4>
-                        <p class="text-[10px] sm:text-xs text-green-400 font-black uppercase mt-1">Aksi Berhasil</p>
+                        <h4 class="text-3xl font-black text-white">{{ number_format($aksiBerhasil) }}</h4>
+                        <p class="text-[10px] sm:text-xs text-green-400 font-black uppercase mt-1">Aksi Selesai</p>
                     </div>
                 </div>
             </div>
@@ -152,6 +176,53 @@
                     <p class="text-slate-500 leading-relaxed">Ratusan relawan mendaftar melalui platform kami, turun ke lokasi, dan menyelesaikan misi pemulihan lingkungan bersama.</p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 bg-white relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-green-600 font-bold uppercase tracking-widest text-sm">Ikut Beraksi</span>
+                <h3 class="text-3xl sm:text-4xl font-black text-slate-900 mt-2">Aksi Relawan Terbaru</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                @foreach($openCampaigns as $campaign)
+                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col h-full transform hover:-translate-y-1">
+                        <div class="flex items-start justify-between gap-3 mb-4">
+                            <h3 class="font-black text-slate-800 text-xl leading-tight">{{ $campaign->title }}</h3>
+                            <span class="bg-green-100 text-green-700 font-black px-3 py-1 rounded-full text-xs tracking-wider">OPEN</span>
+                        </div>
+                        <p class="text-slate-500 text-sm mb-6 flex-1 leading-relaxed line-clamp-3">{{ $campaign->description }}</p>
+                        
+                        <div class="border-t border-slate-100 pt-4 flex items-center justify-between mt-auto">
+                            <p class="text-xs font-bold text-slate-400 flex items-center gap-2">
+                                <span class="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center">👤</span> 
+                                {{ $campaign->organizer->name ?? 'Komunitas' }}
+                            </p>
+                            <a href="{{ route('register') }}" class="bg-green-50 hover:bg-green-600 text-green-700 hover:text-white transition-colors font-bold text-xs px-4 py-2 rounded-full">Gabung &rarr;</a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            @if($openCampaigns->isEmpty())
+                <div class="text-center text-slate-400 font-bold bg-slate-50 p-10 rounded-2xl border border-dashed border-slate-200">
+                    Belum ada kampanye yang dibuka saat ini.
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <section class="py-24 px-6 bg-slate-50 border-t border-slate-200 overflow-hidden">
+        <div class="max-w-4xl mx-auto text-center mb-16">
+            <span class="text-green-600 font-bold uppercase tracking-widest text-sm">Bukti Nyata</span>
+            <h3 class="text-3xl sm:text-4xl font-black text-slate-900 mt-2">Dampak yang Kita Ciptakan</h3>
+            <p class="mt-4 text-slate-500 text-lg">Geser <em>slider</em> di bawah ini untuk melihat perbedaan sebelum dan sesudah aksi gotong royong pembersihan sampah dilakukan oleh para relawan.</p>
+        </div>
+        <div class="max-w-4xl mx-auto rounded-[2rem] overflow-hidden shadow-2xl border-[12px] border-white relative z-20 bg-white">
+            <x-before-after-slider 
+                before="{{ asset('images/before.jpeg') }}"
+                after="{{ asset('images/after.jpeg') }}"
+            />
         </div>
     </section>
 

@@ -8,12 +8,14 @@ use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\OrganizerController;
 use App\Http\Controllers\Web\AdminController;
 
+use App\Models\User;
+use App\Models\Campaign;
+use App\Models\Report;
+
 // =====================================================
-// 1. GUEST: Halaman Landing Utama (Selalu tampil)
+// 1. PUBLIC: Halaman Beranda / Landing Utama
 // =====================================================
-Route::get('/', function () {
-    return view('landing');
-})->name('landing');
+Route::get('/', [ReportController::class, 'index'])->name('home');
 
 // =====================================================
 // 2. AUTH: Proses Masuk & Daftar Akun (hanya tamu)
@@ -30,18 +32,22 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 // =====================================================
 // 3. DASHBOARD ROLE: USER (Relawan Biasa)
 // =====================================================
-Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
+Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard',          [UserController::class, 'dashboard'])->name('dashboard');
     Route::get('/lapor',              [ReportController::class, 'create'])->name('reports.create');
     Route::post('/lapor',             [ReportController::class, 'store'])->name('reports.store');
     Route::get('/campaign/{id}',      [CampaignController::class, 'show'])->name('campaigns.show');
     Route::post('/campaign/{id}/join',[CampaignController::class, 'join'])->name('campaigns.join');
+    
+    // Reward Routes
+    Route::get('/rewards',            [\App\Http\Controllers\Web\RewardController::class, 'index'])->name('rewards.index');
+    Route::post('/rewards/{id}/redeem',[\App\Http\Controllers\Web\RewardController::class, 'redeem'])->name('rewards.redeem');
 });
 
 // =====================================================
 // 4. DASHBOARD ROLE: ORGANIZER (Komunitas Penggerak)
 // =====================================================
-Route::middleware(['auth'])->prefix('organizer')->name('organizer.')->group(function () {
+Route::middleware(['auth', 'role:organizer'])->prefix('organizer')->name('organizer.')->group(function () {
     Route::get('/dashboard',           [OrganizerController::class, 'dashboard'])->name('dashboard');
     Route::post('/report/{id}/verify', [OrganizerController::class, 'verifyReport'])->name('reports.verify');
     Route::post('/campaign/create',    [OrganizerController::class, 'createCampaign'])->name('campaigns.create');
@@ -51,7 +57,7 @@ Route::middleware(['auth'])->prefix('organizer')->name('organizer.')->group(func
 // =====================================================
 // 5. DASHBOARD ROLE: ADMIN (Super Admin)
 // =====================================================
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard',              [AdminController::class, 'dashboard'])->name('dashboard');
     Route::post('/report/{id}/status',    [AdminController::class, 'updateReportStatus'])->name('reports.status');
     Route::delete('/user/{id}',           [AdminController::class, 'deleteUser'])->name('users.delete');
@@ -59,12 +65,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 });
 
 // =====================================================
-// 6. ROUTE UMUM (beranda lama & campaign publik)
+// 6. ROUTE UMUM: Shared Pages (authenticated)
 // =====================================================
 Route::middleware(['auth'])->group(function () {
-    Route::get('/beranda',             [ReportController::class, 'index'])->name('home');
+    // Shared routes — bisa diakses oleh role apapun yang sudah login
     Route::get('/campaign/{id}',       [CampaignController::class, 'show'])->name('campaigns.show');
     Route::post('/campaign/{id}/join', [CampaignController::class, 'join'])->name('campaigns.join');
+    Route::get('/campaign/{id}/checkin', [CampaignController::class, 'checkin'])->name('campaigns.checkin');
     Route::get('/lapor',               [ReportController::class, 'create'])->name('reports.create');
     Route::post('/lapor',              [ReportController::class, 'store'])->name('reports.store');
 });

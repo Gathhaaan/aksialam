@@ -108,7 +108,9 @@
                     @forelse($myCampaigns->take(4) as $campaign)
                         <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; background:#f8fafc; border-radius:12px; margin-bottom:8px;">
                             <div style="flex:1; min-width:0;">
-                                <p style="font-weight:700; color:#0f172a; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $campaign->title }}</p>
+                                <a href="{{ route('campaigns.show', $campaign->id) }}" style="text-decoration:none;">
+                                    <p style="font-weight:700; color:#0f172a; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer;" onmouseover="this.style.color='#2563eb'" onmouseout="this.style.color='#0f172a'">{{ $campaign->title }}</p>
+                                </a>
                                 <p style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">🤝 {{ $campaign->volunteers->count() }} relawan</p>
                             </div>
                             <span class="badge badge-{{ $campaign->status }}">{{ ucfirst($campaign->status) }}</span>
@@ -149,7 +151,9 @@
                 @forelse($myCampaigns as $campaign)
                     <div style="padding:20px 24px; border-bottom:1px solid #f8fafc; display:flex; align-items:center; gap:16px;">
                         <div style="flex:1; min-width:0;">
-                            <p style="font-weight:700; color:#0f172a;">{{ $campaign->title }}</p>
+                            <a href="{{ route('campaigns.show', $campaign->id) }}" style="text-decoration:none;">
+                                <p style="font-weight:900; color:#0f172a; font-size:1.1rem; cursor:pointer;" onmouseover="this.style.color='#2563eb'" onmouseout="this.style.color='#0f172a'">{{ $campaign->title }}</p>
+                            </a>
                             <p style="font-size:0.8rem; color:#64748b; margin-top:2px;">{{ Str::limit($campaign->description, 80) }}</p>
                             <p style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">🤝 {{ $campaign->volunteers->count() }} Relawan · Target: {{ number_format($campaign->target_metric) }} kg</p>
                         </div>
@@ -199,7 +203,7 @@
 
     {{-- ===== MODAL: Buat Kampanye ===== --}}
     <div id="modal-create" class="modal-overlay" onclick="if(event.target===this) closeModal()">
-        <div style="background:white; border-radius:24px; padding:32px; width:100%; max-width:480px; box-shadow:0 25px 50px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
+        <div style="background:white; border-radius:24px; padding:32px; width:100%; max-width:520px; box-shadow:0 25px 50px rgba(0,0,0,0.2); max-height:90vh; overflow-y:auto;" onclick="event.stopPropagation()">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
                 <h3 style="font-size:1.5rem; font-weight:900; color:#0f172a;">Buat Kampanye Baru</h3>
                 <button onclick="closeModal()" style="background:none; border:none; font-size:1.5rem; color:#94a3b8; cursor:pointer; line-height:1;">✕</button>
@@ -212,17 +216,33 @@
                 </div>
                 <div>
                     <label style="display:block; font-size:0.85rem; font-weight:700; color:#374151; margin-bottom:6px;">Deskripsi</label>
-                    <textarea name="description" rows="3" required placeholder="Jelaskan tujuan kampanye..." style="width:100%; padding:12px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-size:0.9rem; box-sizing:border-box; resize:vertical;"></textarea>
+                    <textarea name="description" rows="3" placeholder="Jelaskan tujuan kampanye..." style="width:100%; padding:12px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-size:0.9rem; box-sizing:border-box; resize:vertical;"></textarea>
                 </div>
-                <div>
-                    <label style="display:block; font-size:0.85rem; font-weight:700; color:#374151; margin-bottom:6px;">Target Sampah (kg)</label>
-                    <input type="number" name="target_metric" required min="1" placeholder="cth. 500" style="width:100%; padding:12px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-size:0.9rem; box-sizing:border-box;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; font-weight:700; color:#374151; margin-bottom:6px;">Tanggal Acara</label>
+                        <input type="date" name="event_date" required min="{{ date('Y-m-d', strtotime('+1 day')) }}" style="width:100%; padding:12px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-size:0.9rem; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.85rem; font-weight:700; color:#374151; margin-bottom:6px;">Maks Relawan</label>
+                        <input type="number" name="max_volunteers" required min="1" placeholder="cth. 50" style="width:100%; padding:12px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-size:0.9rem; box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; font-weight:700; color:#374151; margin-bottom:6px;">Target Capaian</label>
+                        <input type="number" name="target_metric" required min="1" placeholder="cth. 500" style="width:100%; padding:12px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-size:0.9rem; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.85rem; font-weight:700; color:#374151; margin-bottom:6px;">Satuan Metrik</label>
+                        <input type="text" name="metric_unit" required placeholder="cth. kg sampah" style="width:100%; padding:12px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-size:0.9rem; box-sizing:border-box;">
+                    </div>
                 </div>
                 <div>
                     <label style="display:block; font-size:0.85rem; font-weight:700; color:#374151; margin-bottom:6px;">Berdasarkan Laporan</label>
-                    <select name="report_id" required style="width:100%; padding:12px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-size:0.9rem; box-sizing:border-box;">
-                        <option value="">— Pilih laporan terverifikasi —</option>
-                        @foreach(\App\Models\Report::where('status','verified')->get() as $r)
+                    <select name="report_id" style="width:100%; padding:12px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-size:0.9rem; box-sizing:border-box;">
+                        <option value="">— Pilih laporan terverifikasi (opsional) —</option>
+                        @foreach($verifiedReports as $r)
                             <option value="{{ $r->id }}">[#{{ $r->id }}] {{ $r->title }}</option>
                         @endforeach
                     </select>

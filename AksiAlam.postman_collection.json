@@ -1,0 +1,416 @@
+{
+	"info": {
+		"_postman_id": "aksialam-api-v1",
+		"name": "AksiAlam API v1",
+		"description": "Koleksi API untuk platform AksiAlam — Gotong Royong Digital untuk Restorasi Ekologi Indonesia.\n\nMetode autentikasi:\n1. JWT Bearer Token (untuk CRUD)\n2. API Key via header X-API-KEY (untuk statistik)\n3. Basic Auth (login email + password)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{ "key": "base_url", "value": "http://localhost:8000/api/v1" },
+		{ "key": "token", "value": "" },
+		{ "key": "api_key", "value": "aksialam-api-key-2026-secret" }
+	],
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@aksialam.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": { "raw": "{{base_url}}/register", "host": ["{{base_url}}"], "path": ["register"] }
+					}
+				},
+				{
+					"name": "Login (User)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access_token) {",
+									"    pm.collectionVariables.set('token', jsonData.access_token);",
+									"    console.log('Token saved!');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"gathan@user.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+					}
+				},
+				{
+					"name": "Login (Organizer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access_token) {",
+									"    pm.collectionVariables.set('token', jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"org@himafortic.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+					}
+				},
+				{
+					"name": "Login (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access_token) {",
+									"    pm.collectionVariables.set('token', jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@aksialam.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/logout", "host": ["{{base_url}}"], "path": ["logout"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Reports (Laporan)",
+			"item": [
+				{
+					"name": "List All Reports",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/reports", "host": ["{{base_url}}"], "path": ["reports"] }
+					}
+				},
+				{
+					"name": "List Reports (Filter: Sampah)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": {
+							"raw": "{{base_url}}/reports?category=sampah",
+							"host": ["{{base_url}}"],
+							"path": ["reports"],
+							"query": [{ "key": "category", "value": "sampah" }]
+						}
+					}
+				},
+				{
+					"name": "List Reports (Search)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": {
+							"raw": "{{base_url}}/reports?q=kali",
+							"host": ["{{base_url}}"],
+							"path": ["reports"],
+							"query": [{ "key": "q", "value": "kali" }]
+						}
+					}
+				},
+				{
+					"name": "List Reports (Filter: Status Verified)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": {
+							"raw": "{{base_url}}/reports?status=verified",
+							"host": ["{{base_url}}"],
+							"path": ["reports"],
+							"query": [{ "key": "status", "value": "verified" }]
+						}
+					}
+				},
+				{
+					"name": "Show Report Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/reports/1", "host": ["{{base_url}}"], "path": ["reports", "1"] }
+					}
+				},
+				{
+					"name": "Create Report (JWT)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Sampah Berserakan di Taman Kota\",\n  \"description\": \"Ditemukan sampah plastik dan botol kaca berserakan di area taman kota.\",\n  \"category\": \"sampah\",\n  \"location_name\": \"Taman Bungkul, Surabaya\"\n}"
+						},
+						"url": { "raw": "{{base_url}}/reports", "host": ["{{base_url}}"], "path": ["reports"] }
+					}
+				},
+				{
+					"name": "Update Report (JWT, Owner)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"[UPDATED] Sampah Berserakan di Taman Kota\",\n  \"description\": \"Update: kondisi semakin parah setelah hujan deras.\"\n}"
+						},
+						"url": { "raw": "{{base_url}}/reports/1", "host": ["{{base_url}}"], "path": ["reports", "1"] }
+					}
+				},
+				{
+					"name": "Delete Report (JWT, Owner/Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/reports/1", "host": ["{{base_url}}"], "path": ["reports", "1"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Campaigns (Kampanye)",
+			"item": [
+				{
+					"name": "List All Campaigns",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/campaigns", "host": ["{{base_url}}"], "path": ["campaigns"] }
+					}
+				},
+				{
+					"name": "List Campaigns (Filter: Open)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": {
+							"raw": "{{base_url}}/campaigns?status=open",
+							"host": ["{{base_url}}"],
+							"path": ["campaigns"],
+							"query": [{ "key": "status", "value": "open" }]
+						}
+					}
+				},
+				{
+					"name": "Show Campaign Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/campaigns/1", "host": ["{{base_url}}"], "path": ["campaigns", "1"] }
+					}
+				},
+				{
+					"name": "Create Campaign (JWT, Organizer)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Bersih Pantai Kenjeran 2026\",\n  \"description\": \"Aksi gotong royong membersihkan sampah plastik di pesisir Kenjeran\",\n  \"event_date\": \"2026-07-15\",\n  \"max_volunteers\": 50,\n  \"target_metric\": 500,\n  \"metric_unit\": \"kg sampah\",\n  \"report_id\": 1\n}"
+						},
+						"url": { "raw": "{{base_url}}/campaigns", "host": ["{{base_url}}"], "path": ["campaigns"] }
+					}
+				},
+				{
+					"name": "Update Campaign (JWT, Owner)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"[UPDATED] Bersih Pantai Kenjeran 2026\",\n  \"max_volunteers\": 100\n}"
+						},
+						"url": { "raw": "{{base_url}}/campaigns/1", "host": ["{{base_url}}"], "path": ["campaigns", "1"] }
+					}
+				},
+				{
+					"name": "Delete Campaign (JWT, Owner/Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/campaigns/1", "host": ["{{base_url}}"], "path": ["campaigns", "1"] }
+					}
+				},
+				{
+					"name": "Join Campaign (JWT, User)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/campaigns/1/join", "host": ["{{base_url}}"], "path": ["campaigns", "1", "join"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "4. User Profile",
+			"item": [
+				{
+					"name": "My Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/user/profile", "host": ["{{base_url}}"], "path": ["user", "profile"] }
+					}
+				},
+				{
+					"name": "My Reports",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/user/reports", "host": ["{{base_url}}"], "path": ["user", "reports"] }
+					}
+				},
+				{
+					"name": "My Campaigns",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/user/campaigns", "host": ["{{base_url}}"], "path": ["user", "campaigns"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Stats & Leaderboard (API Key)",
+			"item": [
+				{
+					"name": "Platform Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-API-KEY", "value": "{{api_key}}" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/stats", "host": ["{{base_url}}"], "path": ["stats"] }
+					}
+				},
+				{
+					"name": "Leaderboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-API-KEY", "value": "{{api_key}}" },
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/leaderboard", "host": ["{{base_url}}"], "path": ["leaderboard"] }
+					}
+				},
+				{
+					"name": "Stats (Tanpa API Key — Expect 401)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" }
+						],
+						"url": { "raw": "{{base_url}}/stats", "host": ["{{base_url}}"], "path": ["stats"] }
+					}
+				}
+			]
+		}
+	]
+}

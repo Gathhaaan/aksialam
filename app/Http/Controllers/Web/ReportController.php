@@ -35,26 +35,79 @@ class ReportController extends Controller
         // Data Leaderboard (Top 5)
         $leaderboard = app(\App\Repositories\Interfaces\CampaignRepositoryInterface::class)->getTopVolunteers(5);
 
-        return view('reports.index', compact('reports', 'stats', 'leaderboard'));
+        // Data Kampanye untuk Pin di Peta
+        $campaignsForMap = \App\Models\Campaign::select('id', 'title', 'location_name', 'latitude', 'longitude', 'status', 'event_date')
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->get();
+
+        // Kampanye Aktif (status = open)
+        $activeCampaigns = \App\Models\Campaign::with('organizer')
+            ->where('status', 'open')
+            ->latest()
+            ->get();
+
+        // Kampanye Lainnya (finished / closed)
+        $otherCampaigns = \App\Models\Campaign::with('organizer')
+            ->whereIn('status', ['finished', 'closed'])
+            ->latest()
+            ->get();
+
+        // Berita Ekologi Indonesia dari NewsAPI (di-cache 6 jam)
+        $ecoNews = \Illuminate\Support\Facades\Cache::remember('eco_news', 60 * 360, function () {
+            try {
+                $apiKey = env('NEWS_API_KEY');
+                // Gunakan keyword ekologi dengan pencarian frase pasti agar spesifik berbahasa Indonesia
+                $query = urlencode('"lingkungan hidup" OR "kerusakan lingkungan" OR "hutan indonesia" OR "sampah plastik"');
+                // Hapus filter domain agar cakupan pencarian lebih luas ke berbagai media
+                $url = "https://newsapi.org/v2/everything?q={$query}&sortBy=publishedAt&pageSize=9&apiKey={$apiKey}";
+                
+                $response = \Illuminate\Support\Facades\Http::timeout(10)->get($url);
+                
+                if ($response->successful()) {
+                    $data = $response->json();
+                    $articles = $data['articles'] ?? [];
+                    // Filter artikel yang tidak valid
+                    return array_filter($articles, fn($a) => !empty($a['title']) && $a['title'] !== '[Removed]' && !empty($a['urlToImage']));
+                }
+            } catch (\Exception $e) {
+                // Fallback: return empty array jika API gagal
+            }
+            return [];
+        });
+
+        // Ambil maksimal 8 laporan untuk ditampilkan di carousel
+        $reports = $reports->take(8);
+
+        return view('reports.index', compact('reports', 'stats', 'leaderboard', 'campaignsForMap', 'activeCampaigns', 'otherCampaigns', 'ecoNews'));
     }
 
     // Menambahkan method ini di bawah method index()
     public function create()
     {
-        return view('reports.create');
+        // Fetch existing reports to show as markers on the map
+        $existingReports = \App\Models\Report::select('id', 'title', 'location_name', 'latitude', 'longitude', 'status', 'category')
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->get();
+            
+        return view('reports.create', compact('existingReports'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required',
-            'category' => 'required',
-            'location_name' => 'required',
+            'description' => 'required|string',
+            'category' => 'required|in:sampah,fasilitas,flora_fauna',
+            'location_name' => 'required|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi Foto
         ]);
 
-        $data = $request->all();
+        // Hanya gunakan field yang sudah divalidasi
+        $data = collect($validated)->except('image')->toArray();
         $data['user_id'] = auth()->id();
         $data['status'] = 'pending';
 

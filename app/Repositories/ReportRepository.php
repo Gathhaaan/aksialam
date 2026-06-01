@@ -29,15 +29,48 @@ class ReportRepository implements ReportRepositoryInterface
         return $report;
     }
 
-    public function getTotalValidatedReports() {
-    return \App\Models\Report::whereIn('status', ['verified', 'resolved'])->count();
+    public function getTotalValidatedReports()
+    {
+        return Report::whereIn('status', ['verified', 'resolved'])->count();
     }
 
-    // Fungsi pencarian baru
-    public function searchReports($query = null, $category = null) {
-        $results = \App\Models\Report::query();
+    public function searchReports($query = null, $category = null)
+    {
+        $results = Report::query();
         if ($query) $results->where('title', 'like', "%$query%");
         if ($category) $results->where('category', $category);
         return $results->with('user')->latest()->get();
+    }
+
+    public function getReportsByStatus($status, $limit = null)
+    {
+        $query = Report::with('user')->where('status', $status)->latest();
+        return $limit ? $query->take($limit)->get() : $query->get();
+    }
+
+    public function getRecentReports($limit = 10)
+    {
+        return Report::with('user')->latest()->take($limit)->get();
+    }
+
+    public function getReportsByUser($userId)
+    {
+        return Report::where('user_id', $userId)->latest()->get();
+    }
+
+    public function getReportCounts()
+    {
+        return [
+            'total'    => Report::count(),
+            'pending'  => Report::where('status', 'pending')->count(),
+            'verified' => Report::where('status', 'verified')->count(),
+            'resolved' => Report::where('status', 'resolved')->count(),
+            'rejected' => Report::where('status', 'rejected')->count(),
+        ];
+    }
+
+    public function deleteReport($id)
+    {
+        return Report::findOrFail($id)->delete();
     }
 }

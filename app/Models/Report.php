@@ -15,6 +15,8 @@ class Report extends Model
         'description',
         'category',
         'location_name',
+        'latitude',
+        'longitude',
         'status',
         'image_url', // Jangan lupa kolom gambar yang baru kita buat
     ];

@@ -13,15 +13,24 @@ class UserController extends Controller
 {
     public function dashboard()
     {
-        // User biasa langsung ke beranda
-        return redirect()->route('home');
-    }
+        $user = Auth::user();
 
-    private function redirectByRole()
-    {
-        $role = Auth::user()->role;
-        if ($role === 'admin') return redirect()->route('admin.dashboard');
-        if ($role === 'organizer') return redirect()->route('organizer.dashboard');
-        return redirect()->route('landing');
+        // Laporan milik user ini
+        $user = auth()->user();
+        $myReports = $user->reports()->latest()->get();
+        $myCampaigns = $user->joinedCampaigns()->latest()->get();
+        
+        // Ambil riwayat penukaran reward
+        $myRewards = $user->rewards()->latest('user_rewards.created_at')->get();
+
+        // Hitung peringkat (berdasarkan exp_points terbesar)
+        $userRank = User::where('role', 'user')->where('exp_points', '>', $user->exp_points)->count() + 1;
+        
+        $leaderboard = User::where('role', 'user')
+                           ->orderBy('exp_points', 'desc')
+                           ->take(5)
+                           ->get();
+
+        return view('user.dashboard', compact('user', 'myReports', 'myCampaigns', 'myRewards', 'userRank', 'leaderboard'));
     }
 }
