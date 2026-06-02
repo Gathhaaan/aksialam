@@ -212,9 +212,9 @@
                 </div>
             </div>
 
-            {{-- Search & Filter --}}
-            <form action="{{ route('home') }}" method="GET" class="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-8">
-                <input type="text" name="search" placeholder="Cari lokasi atau masalah..." value="{{ request('search') }}" class="flex-1 px-4 py-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-green-500 font-medium">
+            <div class="max-w-4xl mx-auto">
+            <form action="{{ route('home') }}#laporan-warga" method="GET" class="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-8">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari laporan (contoh: tumpukan sampah...)" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 transition-shadow">
                 <select name="category" class="px-4 py-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-green-500 font-medium cursor-pointer">
                     <option value="">Semua Kategori</option>
                     <option value="sampah" {{ request('category') == 'sampah' ? 'selected' : '' }}>Masalah Sampah</option>
