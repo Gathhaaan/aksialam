@@ -121,4 +121,10 @@ class ReportController extends Controller
 
         return redirect()->route('user.dashboard')->with('success', 'Laporan berhasil dikirim! Terima kasih telah peduli. 🌿');
     }
+
+    public function show($id)
+    {
+        $report = Report::with('user')->findOrFail($id);
+        return view('reports.show', compact('report'));
+    }
 }

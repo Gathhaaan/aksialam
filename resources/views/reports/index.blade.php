@@ -55,7 +55,7 @@
                 <a href="{{ route('reports.create') }}" class="bg-green-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-green-400 hover:scale-105 hover:shadow-lg hover:shadow-green-500/30 transition-all duration-300">
                     Buat Laporan Sekarang
                 </a>
-                <a href="#eksplorasi" class="bg-white/10 backdrop-blur-md text-white border border-white/30 px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-slate-900 transition-all duration-300">
+                <a href="#kampanye-aktif" class="bg-white/10 backdrop-blur-md text-white border border-white/30 px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-slate-900 transition-all duration-300">
                     Cari Aksi Relawan
                 </a>
             </div>
@@ -86,6 +86,22 @@
                 <h3 class="text-2xl font-black text-slate-800">Peta Sebaran Kerusakan (Real-Time)</h3>
             </div>
             <div id="main-map" class="w-full h-[500px] rounded-3xl border-4 border-white shadow-xl z-10"></div>
+            
+            {{-- Keterangan Warna Pin (Legend) --}}
+            <div class="mt-4 flex flex-wrap gap-6 items-center justify-center text-sm font-bold text-slate-600">
+                <div class="flex items-center gap-2">
+                    <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png" class="h-6 object-contain" alt="Merah">
+                    <span>Laporan Masuk (Pending)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png" class="h-6 object-contain" alt="Biru">
+                    <span>Kampanye / Aksi Relawan</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png" class="h-6 object-contain" alt="Hijau">
+                    <span>Selesai Teratasi (Tuntas)</span>
+                </div>
+            </div>
         </section>
 
         {{-- ==========================================

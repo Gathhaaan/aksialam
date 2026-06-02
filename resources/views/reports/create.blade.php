@@ -9,6 +9,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body class="bg-slate-50 min-h-screen pt-10">
+    <div class="max-w-2xl mx-auto mb-4">
+        <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-bold text-slate-500 hover:text-green-600 transition">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Kembali ke Beranda
+        </a>
+    </div>
+    
     <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-sm border border-slate-100">
         <h2 class="text-2xl font-bold text-slate-900 mb-2">Laporkan Kondisi Alam</h2>
         <p class="text-slate-500 mb-6">Bantu komunitas mengetahui titik mana yang membutuhkan aksi swadaya segera.</p>

@@ -27,7 +27,7 @@
 
     {{-- ===== SIDEBAR ===== --}}
     <aside class="sidebar">
-        <a href="{{ route('landing') }}" class="text-2xl font-black text-blue-400 tracking-tighter mb-2 px-4" style="text-decoration:none;">AksiAlam.</a>
+        <a href="{{ route('home') }}" class="text-2xl font-black text-blue-400 tracking-tighter mb-2 px-4" style="text-decoration:none;">AksiAlam.</a>
         <p class="text-xs text-slate-500 font-bold uppercase tracking-widest px-4 mb-8">Portal Organizer</p>
 
         <nav style="display:flex; flex-direction:column; gap:4px; flex:1;">
@@ -43,6 +43,9 @@
             <button onclick="openModal()" id="btn-create" class="sidebar-link">
                 <span>➕</span> Buat Kampanye
             </button>
+            <a href="{{ route('home') }}" class="sidebar-link" style="text-decoration:none; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                <span>🌍</span> Ke Beranda Utama
+            </a>
         </nav>
 
         <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:20px; margin-top:20px;">

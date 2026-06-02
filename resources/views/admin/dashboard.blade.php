@@ -27,7 +27,7 @@
 
     {{-- ===== SIDEBAR ===== --}}
     <aside style="width:260px; min-height:100vh; background:#0f172a; display:flex; flex-direction:column; position:fixed; top:0; left:0; z-index:40; padding:32px 16px;">
-        <a href="{{ route('landing') }}" class="text-2xl font-black tracking-tighter mb-2 px-4" style="color:#c084fc;">AksiAlam.</a>
+        <a href="{{ route('home') }}" class="text-2xl font-black tracking-tighter mb-2 px-4" style="color:#c084fc;">AksiAlam.</a>
         <p class="text-xs text-slate-500 font-bold uppercase tracking-widest px-4 mb-8">Super Admin Panel</p>
 
         <nav class="flex flex-col gap-1 flex-1">
@@ -43,6 +43,9 @@
             <button onclick="switchTab('tab-campaigns')" class="sidebar-link">
                 <span class="text-xl">📣</span> Semua Kampanye
             </button>
+            <a href="{{ route('home') }}" class="sidebar-link" style="text-decoration:none; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                <span class="text-xl">🌍</span> Ke Beranda Utama
+            </a>
         </nav>
 
         <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:20px; margin-top:20px;">

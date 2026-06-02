@@ -32,7 +32,7 @@
             <p>Silakan tunjukkan kode voucher ini kepada mitra kami atau gunakan di website merchant yang bersangkutan.</p>
             
             <center>
-                <a href="{{ route('landing') }}" class="btn">Kembali ke AksiAlam</a>
+                <a href="{{ route('home') }}" class="btn">Kembali ke AksiAlam</a>
             </center>
         </div>
         <div class="footer">

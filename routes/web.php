@@ -74,4 +74,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/campaign/{id}/checkin', [CampaignController::class, 'checkin'])->name('campaigns.checkin');
     Route::get('/lapor',               [ReportController::class, 'create'])->name('reports.create');
     Route::post('/lapor',              [ReportController::class, 'store'])->name('reports.store');
+    Route::get('/reports/{id}',        [ReportController::class, 'show'])->name('reports.show');
 });
