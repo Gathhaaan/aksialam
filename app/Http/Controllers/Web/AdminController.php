@@ -37,14 +37,14 @@ class AdminController extends Controller
             'total_volunteers'  => \DB::table('campaign_user')->count(),
         ];
 
-        // Semua laporan terbaru (via repository)
-        $recentReports = $this->reportRepository->getRecentReports(10);
+        // Laporan berhalaman
+        $recentReports = \App\Models\Report::with('user')->orderBy('created_at', 'desc')->paginate(10, ['*'], 'reports_page');
 
-        // Semua user terbaru
-        $recentUsers = User::latest()->take(8)->get();
+        // User berhalaman
+        $recentUsers = User::latest()->paginate(10, ['*'], 'users_page');
 
-        // Semua campaign (via repository)
-        $allCampaigns = $this->campaignRepository->getAllCampaigns()->take(8);
+        // Kampanye berhalaman
+        $allCampaigns = \App\Models\Campaign::with(['organizer', 'report'])->latest()->paginate(10, ['*'], 'campaigns_page');
 
         return view('admin.dashboard', compact(
             'stats', 'recentReports', 'recentUsers', 'allCampaigns'

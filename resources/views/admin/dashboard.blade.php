@@ -1,3 +1,8 @@
+@php
+    $activeTab = 'tab-reports';
+    if(request()->has('users_page')) $activeTab = 'tab-users';
+    if(request()->has('campaigns_page')) $activeTab = 'tab-campaigns';
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -31,16 +36,16 @@
         <p class="text-xs text-slate-500 font-bold uppercase tracking-widest px-4 mb-8">Super Admin Panel</p>
 
         <nav class="flex flex-col gap-1 flex-1">
-            <a href="{{ route('admin.dashboard') }}" class="sidebar-link active">
+            <a href="{{ route('admin.dashboard') }}" class="sidebar-link">
                 <span class="text-xl">🛡️</span> Dashboard
             </a>
-            <button onclick="switchTab('tab-reports')" class="sidebar-link">
+            <button onclick="switchTab('tab-reports')" class="sidebar-link {{ $activeTab == 'tab-reports' ? 'active' : '' }}">
                 <span class="text-xl">📋</span> Kelola Laporan
             </button>
-            <button onclick="switchTab('tab-users')" class="sidebar-link">
+            <button onclick="switchTab('tab-users')" class="sidebar-link {{ $activeTab == 'tab-users' ? 'active' : '' }}">
                 <span class="text-xl">👥</span> Kelola User
             </button>
-            <button onclick="switchTab('tab-campaigns')" class="sidebar-link">
+            <button onclick="switchTab('tab-campaigns')" class="sidebar-link {{ $activeTab == 'tab-campaigns' ? 'active' : '' }}">
                 <span class="text-xl">📣</span> Semua Kampanye
             </button>
             <a href="{{ route('home') }}" class="sidebar-link" style="text-decoration:none; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
@@ -131,15 +136,9 @@
             </div>
         </div>
 
-        {{-- Tab Navigation --}}
-        <div class="flex gap-2 mb-6">
-            <button class="tab-btn active" id="btn-reports" onclick="switchTab('tab-reports')">📋 Laporan</button>
-            <button class="tab-btn" id="btn-users" onclick="switchTab('tab-users')">👥 Users</button>
-            <button class="tab-btn" id="btn-campaigns" onclick="switchTab('tab-campaigns')">📣 Kampanye</button>
-        </div>
 
         {{-- ===== TAB: LAPORAN ===== --}}
-        <div id="tab-reports" class="tab-content active">
+        <div id="tab-reports" class="tab-content {{ $activeTab == 'tab-reports' ? 'active' : '' }}">
             <div class="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
                 <div class="p-6 border-b border-slate-100">
                     <h2 class="text-xl font-black text-slate-800">Semua Laporan Terbaru</h2>
@@ -193,11 +192,14 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="p-4 border-t border-slate-100 flex justify-end">
+                    {{ $recentReports->appends(request()->query())->links('vendor.pagination.custom') }}
+                </div>
             </div>
         </div>
 
         {{-- ===== TAB: USERS ===== --}}
-        <div id="tab-users" class="tab-content">
+        <div id="tab-users" class="tab-content {{ $activeTab == 'tab-users' ? 'active' : '' }}">
             <div class="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
                 <div class="p-6 border-b border-slate-100">
                     <h2 class="text-xl font-black text-slate-800">Semua User Terdaftar</h2>
@@ -255,11 +257,14 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="p-4 border-t border-slate-100 flex justify-end">
+                    {{ $recentUsers->appends(request()->query())->links('vendor.pagination.custom') }}
+                </div>
             </div>
         </div>
 
         {{-- ===== TAB: KAMPANYE ===== --}}
-        <div id="tab-campaigns" class="tab-content">
+        <div id="tab-campaigns" class="tab-content {{ $activeTab == 'tab-campaigns' ? 'active' : '' }}">
             <div class="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
                 <div class="p-6 border-b border-slate-100">
                     <h2 class="text-xl font-black text-slate-800">Semua Kampanye</h2>
@@ -296,6 +301,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="p-4 border-t border-slate-100 flex justify-end">
+                    {{ $allCampaigns->appends(request()->query())->links('vendor.pagination.custom') }}
+                </div>
             </div>
         </div>
 
@@ -303,13 +311,15 @@
 
     <script>
         function switchTab(tabId) {
-            // Sembunyikan semua tab
+            // Sembunyikan semua tab & hapus active state
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
             // Tampilkan tab yang dipilih
             document.getElementById(tabId).classList.add('active');
-            const btnId = 'btn-' + tabId.replace('tab-', '');
-            if(document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
+            // Aktifkan link sidebar yang diklik
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
         }
     </script>
 
