@@ -1,58 +1,149 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AksiAlam
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi berbasis **Laravel 13** (PHP) dengan **Blade** sebagai templating dan **Vite + Tailwind CSS v4** untuk sisi frontend. Menggunakan **Laravel Sanctum** dan **JWT Auth** untuk autentikasi.
 
-## About Laravel
+## 🧰 Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP ^8.3
+- Laravel Framework ^13.7
+- Laravel Sanctum ^4.0
+- JWT Auth (tymon/jwt-auth) ^2.3
+- Vite ^8 + Tailwind CSS ^4
+- Blade
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✅ Prasyarat
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Pastikan sudah terinstal di komputer kamu:
 
-## Learning Laravel
+- [PHP](https://www.php.net/) versi 8.3 atau lebih baru
+- [Composer](https://getcomposer.org/)
+- [Node.js](https://nodejs.org/) (versi LTS terbaru) beserta npm
+- Database: SQLite (bawaan/paling mudah) atau MySQL/PostgreSQL jika ingin pakai itu
+- Git
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🚀 Instalasi & Setup Lokal
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+1. **Clone repository**
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+   git clone https://github.com/Gathhaaan/aksialam.git
+   cd aksialam
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+2. **Install dependency PHP**
+```bash
+   composer install
+```
 
-## Contributing
+3. **Salin file environment**
+```bash
+   cp .env.example .env
+```
+   *(Windows PowerShell: `copy .env.example .env`)*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. **Generate application key**
+```bash
+   php artisan key:generate
+```
 
-## Code of Conduct
+5. **Konfigurasi database**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   Secara default Laravel bisa langsung jalan dengan SQLite. Buat file database-nya:
+```bash
+   touch database/database.sqlite
+```
+   Lalu pastikan di `.env` sudah diatur:
+```env
+   DB_CONNECTION=sqlite
+```
 
-## Security Vulnerabilities
+   Jika ingin memakai MySQL, sesuaikan `.env` seperti berikut, lalu buat database-nya secara manual:
+```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=aksialam
+   DB_USERNAME=root
+   DB_PASSWORD=
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+6. **Jalankan migrasi database**
+```bash
+   php artisan migrate
+```
+   Tambahkan `--seed` jika proyek memiliki seeder dan kamu ingin mengisi data awal:
+```bash
+   php artisan migrate --seed
+```
 
-## License
+7. **Install dependency frontend**
+```bash
+   npm install
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+8. **Build asset frontend**
+```bash
+   npm run build
+```
+
+> 💡 **Alternatif cepat:** langkah 2–8 di atas sudah dirangkum dalam satu perintah Composer:
+> ```bash
+> composer run setup
+> ```
+
+## ▶️ Menjalankan Aplikasi (Development)
+
+Jalankan semua service sekaligus (server, queue listener, log viewer, dan Vite dev server) dengan satu perintah:
+
+```bash
+composer run dev
+```
+
+Atau jalankan secara manual di terminal terpisah:
+
+```bash
+php artisan serve       # menjalankan server Laravel
+npm run dev              # menjalankan Vite dev server (hot reload)
+php artisan queue:listen # (opsional) menjalankan queue worker
+```
+
+Setelah berjalan, buka aplikasi di browser melalui: http://127.0.0.1:8000
+
+## 🧪 Menjalankan Test
+
+```bash
+composer run test
+```
+atau
+```bash
+php artisan test
+```
+
+## 📄 Dokumentasi Tambahan
+
+- Dokumentasi API tersedia di [`API_DOCUMENTATION.md`](./API_DOCUMENTATION.md)
+- Koleksi Postman tersedia di [`AksiAlam.postman_collection.json`](./AksiAlam.postman_collection.json)
+- Spesifikasi kebutuhan software di [`SRS_AksiAlam.md`](./SRS_AksiAlam.md)
+
+## 📁 Struktur Folder Utama
+
+├── app/ # Logic aplikasi (models, controllers, dll)
+├── bootstrap/ # File bootstrap framework
+├── config/ # File konfigurasi
+├── database/ # Migration, factory, seeder
+├── public/ # Entry point & asset publik
+├── resources/ # View (Blade), CSS, JS
+├── routes/ # Definisi route
+├── storage/ # Log, cache, file upload
+└── tests/ # Unit & feature test
+
+## 🤝 Kontribusi
+
+1. Fork repository ini
+2. Buat branch baru (`git checkout -b fitur-baru`)
+3. Commit perubahan (`git commit -m "Menambahkan fitur baru"`)
+4. Push ke branch (`git push origin fitur-baru`)
+5. Buat Pull Request
+
+## 📜 Lisensi
+
+Proyek ini menggunakan lisensi [MIT](https://opensource.org/licenses/MIT).
